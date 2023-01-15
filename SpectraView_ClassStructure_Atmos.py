@@ -84,19 +84,19 @@ def peak_finding(inten_exp, wavelengths_exp, prominence, distance, height, width
     for peak, width in zip(index_peaks, widths):
         if wavelengths_exp[peak] >= WFwave[1]:
             try:
-                exp_peak_wl.append(real_peak(inten_exp, peak, wavelengths_exp, width=np.int(width*WF[2])))
+                exp_peak_wl.append(real_peak(inten_exp, peak, wavelengths_exp, width=np.int_(width*WF[2])))
             except IndexError as e:
                 print("WARNING: In file {}, peak {} could not be fitted with a gaussian. Taking approximation".format(find_number(file_), i))
                 exp_peak_wl.append(wavelengths_exp[peak])
         elif wavelengths_exp[peak] < WFwave[1] and wavelengths_exp[peak] > WFwave[0]:
             try:
-                exp_peak_wl.append(real_peak(inten_exp, peak, wavelengths_exp, width=np.int(width*WF[1])))
+                exp_peak_wl.append(real_peak(inten_exp, peak, wavelengths_exp, width=np.int_(width*WF[1])))
             except IndexError as e:
                 print("WARNING: In file {}, peak {} could not be fitted with a gaussian. Taking approximation".format(find_number(file_), i))
                 exp_peak_wl.append(wavelengths_exp[peak])
         else:
             try:
-                exp_peak_wl.append(real_peak(inten_exp, peak, wavelengths_exp, width=np.int(width*WF[0])))
+                exp_peak_wl.append(real_peak(inten_exp, peak, wavelengths_exp, width=np.int_(width*WF[0])))
             except IndexError as e:
                 print("WARNING: In file {}, peak {} could not be fitted with a gaussian. Taking approximation".format(find_number(file_), i))
                 exp_peak_wl.append(wavelengths_exp[peak])
