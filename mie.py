@@ -1,25 +1,20 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from numba import jit, float64, int64, complex128
 
 
-@jit
 def cauchy(wlen, A, B, C):
     n = A + (B / (wlen ** 2)) + (C / (wlen ** 4))
     return n
 
 
-@jit
 def rel_ref_index(n_particle, n_medium):
     return n_particle / n_medium
 
 
-@jit
 def calc_size_param(radius, wavelength):
     return (2 * np.pi * radius) / (wavelength / 1.00027)
 
 
-@jit
 def log_determinant(size, m, x):
     """
     size :: integer, size of array [nmx in legacy code]
@@ -33,7 +28,6 @@ def log_determinant(size, m, x):
     return D
 
 
-@jit
 def cone_angle(start_angle, end_angle, intensities_found):
     """
     Take out elements of the array found between specified angles
@@ -48,11 +42,10 @@ def cone_angle(start_angle, end_angle, intensities_found):
     angle_per_element = np.pi / np.size(intensities_found)
 
     return intensities_found[
-        np.int(start_angle / angle_per_element) : np.int(end_angle / angle_per_element)
+        np.int_(start_angle / angle_per_element) : np.int_(end_angle / angle_per_element)
     ]
 
 
-@jit
 def average_peak_diff(x, y):
     """
     Takes in two arrays and returns the average difference between corresponding elements.
@@ -62,7 +55,6 @@ def average_peak_diff(x, y):
 
 
 # bhmie outputs the cross sections, and also an array of intensity at each angle
-@jit((float64, complex128, float64, int64, int64, int64))
 def bhmie(
     size_param, n_particle, n_medium, num_angles_in_range, start_angle, end_angle
 ):
@@ -72,7 +64,7 @@ def bhmie(
 
     # calc number of angles over full range
     num_angles = (
-        np.int(np.ceil(num_angles_in_range * (90 / (end_angle - start_angle)))) + 1
+        np.int_(np.ceil(num_angles_in_range * (90 / (end_angle - start_angle)))) + 1
     )
 
     # Number of angles needs to be between 2 and 1000
@@ -94,7 +86,7 @@ def bhmie(
 
     # Series expansion terminated after nstop terms
     # Logarithmic derivatives calculated from nmx on down
-    nstop = np.int(size_param + 4.05 * size_param ** (1 / 3.0) + 2.0)
+    nstop = np.int_(size_param + 4.05 * size_param ** (1 / 3.0) + 2.0)
 
     # TODO: where does this come from??
     nmx = max(nstop, abs(ref_index * size_param)) + 15.0
@@ -203,8 +195,8 @@ def bhmie(
         # comment out either half of the next line if you want paralell or perpendicular polarization
         intensities = (np.abs(s2_2[-2::-1])) ** 2 + (np.abs(s1_2[-2::-1])) ** 2
         # inten_not_squared = (np.abs(s1_2[-2::-1])) + (np.abs(s2_2[-2::-1]))
-        start_index = np.int(((start_angle - 90) / 90) * num_angles)
-        end_index = np.int(((end_angle - 90) / 90) * num_angles)
+        start_index = np.int_(((start_angle - 90) / 90) * num_angles)
+        end_index = np.int_(((end_angle - 90) / 90) * num_angles)
         # print(len(intensities))
         # print(np.linspace(start_index, end_index, 62))
         intensities = intensities[start_index:end_index]
@@ -218,8 +210,8 @@ def bhmie(
         s2 = np.abs(s2_1) ** 2
         # comment out either half of the next line if you want paralell or perpendicular polarization
         intensities = np.abs(s1_1) ** 2 + (np.abs(s2_1) ** 2)
-        start_index = np.int(np.floor(((start_angle) / 90) * num_angles))
-        end_index = np.int(np.ceil(((end_angle) / 90) * num_angles))
+        start_index = np.int_(np.floor(((start_angle) / 90) * num_angles))
+        end_index = np.int_(np.ceil(((end_angle) / 90) * num_angles))
         intensities = intensities[start_index:end_index]
     intensity = np.sum(intensities)
     # inten_nsq = np.sum(inten_not_squared)
